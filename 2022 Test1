@@ -1,1 +1,56 @@
-중간고사 범위 
+import tkinter as tk
+import requests
+
+Height = 500
+Width = 700
+
+
+def test_function(entry):
+    print('button clicked :', entry)
+
+
+def get_weather(city):
+    weather_key = '4344b0c5d63fb946ca403d0675a37478'
+    url = 'http://api.openweathermap.org/data/2.5/weather'
+    params = {'APPID': weather_key, 'q': city, 'units': 'Metric'}
+    response = requests.get(url, params=params)
+    weather = response.json()
+    label['text'] = format_response(weather)
+
+
+def format_response(weather):
+    try:
+        temper = weather['main']['temp']
+        hum = weather['main']['humidity']
+        windspeed = weather['wind']['speed']
+
+        final_str = '온도: %s \n습도: %s \n 풍속: %s' % (temper, hum, windspeed)
+    except:
+        final_str = 'Ther was a problem retrieving that information'
+
+    return final_str
+
+
+root = tk.Tk()
+root.title("Weather App")
+
+canvas = tk.Canvas(root, height=Height, width=Width)
+canvas.pack()
+
+
+frame = tk.Frame(root, bg='#80c1ff', bd=5)
+frame.place(relx=0.5, rely=0.1, relwidth=0.75, relheight=0.1, anchor='n')
+
+button = tk.Button(frame, text='검색하기', font=40, command=lambda: get_weather(entry.get()))
+button.place(relx=0.7, relwidth=0.3, relheight=1)
+
+entry = tk.Entry(frame, font=40)
+entry.place(relwidth=0.65, relheight=1)
+
+lower_frame = tk.Frame(root, bg='#80c1ff', bd=10)
+lower_frame.place(relx=0.5, rely=0.25, relwidth=0.75, relheight=0.6, anchor='n')
+
+label = tk.Label(lower_frame, font=("함초롬바탕", 20))
+label.place(relwidth=1, relheight=1)
+
+root.mainloop()
